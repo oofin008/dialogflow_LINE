@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    print('REQUEST OK')
+    #print('REQUEST OK')
     #return render_template('index.html')
     return 'hello'
 
