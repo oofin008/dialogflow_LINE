@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    #print('REQUEST OK')
+    print('REQUEST OK')
     #return render_template('index.html')
     return 'hello'
 
@@ -19,7 +19,7 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
     print(json.dumps(req, indent=4)
-
+    return
 
 @app.route('/dialogflow', methods=['POST'])
 def dialogflow():
