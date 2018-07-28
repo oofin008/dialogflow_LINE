@@ -11,7 +11,8 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     print('REQUEST OK')
-    return render_template('index.html')
+    #return render_template('index.html')
+    return 'hello'
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
