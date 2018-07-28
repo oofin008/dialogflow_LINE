@@ -1,97 +1,48 @@
 # -*- coding: utf-8 -*-
-import random
-from flask import Flask, request
+from flask import Flask, request, render_template
 import json
 import requests
 import regex
-from zeep import Client
-from lxml import etree
-from oil_price_api import ptt_result_API
-# ตรง YOURSECRETKEY ต้องนำมาใส่เองครับจะกล่าวถึงในขั้นตอนต่อๆ ไป
-global LINE_API_KEY
-# ห้ามลบคำว่า Bearer ออกนะครับเมื่อนำ access token มาใส่
-LINE_API_KEY = 'Bearer zWj79zc/UZsA5V1QaJqTQVTaFhDAjsfMQFQiD4DBOnHBT4DlVJRiv9ltpf0jeWQ3j+nbmrzySep65t+lEvPEI4tcsI129cVzsh6AoispDi9u/t0zOIgdW2v/wmy+mgPOrtDX42X7Rg33klsUmqUxBAdB04t89/1O/w1cDnyilFU='
-DIALOGFLOW_API_KEY = 'Bearer 139af96f81db4dea9540cf139f180612'
-test_val = ptt_result_API()
 
-#function must declare under this line otherwise app will crash
+#file html must save in 'templates' folder
+
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return test_val
+    print('REQUEST OK')
+    return render_template('index.html')
 
-@app.route('/bot', methods=['POST'])
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    req = request.get_json(silent=True, force=True)
+    print("Request:")
+    print(json.dumps(req, indent=4)
 
-def bot():
-    
-    # ข้อความที่ต้องการส่งกลับ
-    replyQueue = list()
-   
-    # ข้อความที่ได้รับมา
-    msg_in_json = request.get_json()
-    msg_in_string = json.dumps(msg_in_json)
-    
-    # Token สำหรับตอบกลับ (จำเป็นต้องใช้ในการตอบกลับ)
-    replyToken = msg_in_json["events"][0]['replyToken']
-    
-    # ส่วนนี้ดึงข้อมูลพื้นฐานออกมาจาก json (เผื่อ)
-    userID =  msg_in_json["events"][0]['source']['userId']
-    msgType =  msg_in_json["events"][0]['message']['type']
-    
-    # ตรวจสอบว่า ที่ส่งเข้ามาเป็น text รึป่าว (อาจเป็น รูป, location อะไรแบบนี้ได้ครับ)
-    # แต่ก็สามารถประมวลผลข้อมูลประเภทอื่นได้นะครับ
-    # เช่น ถ้าส่งมาเป็น location ทำการดึง lat long ออกมาทำบางอย่าง เป็นต้น
-    if msgType != 'text':
-        reply(replyToken, ['Only text is allowed.'])
-        return 'OK',200
-    
-    # ตรงนี้ต้องแน่ใจว่า msgType เป็นประเภท text ถึงเรียกได้ครับ 
-    # lower เพื่อให้เป็นตัวพิมพ์เล็ก strip เพื่อนำช่องว่างหัวท้ายออก ครับ
-    text = msg_in_json["events"][0]['message']['text'].lower().strip()
-    
-    # ตัวอย่างการทำให้ bot ถาม-ตอบได้ แบบ exact match
-    random_list = ['อะไรนะ?', 'what?', 'Hello World', 'Yoyo']
-    response_dict = ['oil','oil price','ราคาน้ำมัน','น้ำมัน']
-    if text in response_dict:
-        replyQueue.append(test_val)
-    else:
-        replyQueue.append(random.choice(random_list))
-       
-    # ตัวอย่างการทำให้ bot ถาม-ตอบได้ แบบ non-exact match
-    # โดยที่มี method ชื่อ find_closest_sentence ที่ใช้การเปรียบเทียบประโยค
-    # เพื่อค้นหาประโยคที่ใกล้เคียงที่สุด อาจใช้เรื่องของ word embedding มาใช้งานได้ครับ
-    # simple sentence embeddings --> https://openreview.net/pdf?id=SyK00v5xx
-    # response_dict = {'สวัสดี':'สวัสดีครับ'}
-    # closest = find_closest_sentence(response_dict, text)
-    # replyQueue.append(reponse_dict[closest])
-   
-    # ทดลอง Echo ข้อความกลับไปในรูปแบบที่ส่งไปมา (แบบ json)
-    #replyQueue.append(msg_in_string)
-    #message to be sent is up to 5
-    #replyQueue.append(test_val)
-    reply(replyToken, replyQueue[:5])
+
+@app.route('/dialogflow', methods=['POST'])
+def dialogflow():
+    msg_in_json = requests.get_json()
+    msg_in_str = json.dumps(msg_in_json)
     return 'OK', 200
- 
-def reply(replyToken, textList):
-    # Method สำหรับตอบกลับข้อความประเภท text กลับครับ เขียนแบบนี้เลยก็ได้ครับ
-    LINE_API = 'https://api.line.me/v2/bot/message/reply'
+
+def reply(text):
+    Dialogflow_API = 'https://api.dialogflow.com/v1/query?v=20150910'
     headers = {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': LINE_API_KEY
-    }
-    msgs = []
-    for text in textList:
-        msgs.append({
-            "type":"text",
-            "text":text
+        'Authorization': DIALOGFLOW_API_KEY,
+        'Content-Type': 'application/json'
+        }
+    body = json.dumps({
+        "contexts": some_list_of_context,
+        "lang": "th",
+        "query": msgs,
+        "sessionId": "12345",
+        "timezone": "Asia/Bangkok"
         })
-    data = json.dumps({
-        "replyToken":replyToken,
-        "messages":msgs
-    })
-    requests.post(LINE_API, headers=headers, data=data)
+    msgs = 'hello'
+    requests.post(Dialogflow_API,headers=headers, data=body)
     return
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
