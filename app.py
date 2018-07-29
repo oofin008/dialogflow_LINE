@@ -23,7 +23,7 @@ def webhook():
     print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
-    return 'OK', 200
+    return r
 
 def makeWebhookResult(req):
     if req.get("queryResult").get("action") != "get-stock-name" :
@@ -36,13 +36,10 @@ def makeWebhookResult(req):
     speech =  "The Stock price of " + name + " is " + str(stock[name])
     print("Response: ")
     print(speech)
-    #return {
-        #"text": speech,
-        #"displayText": speech,
-        #"source": "StockPrice"
-    #}
     return {
-        "fullfillmentText": speech,
+        "speech": speech,
+        "displayText": speech,
+        "source": "StockPrice"
     }
 
 @app.route('/dialogflow', methods=['POST'])
