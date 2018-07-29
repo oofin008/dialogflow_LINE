@@ -42,8 +42,16 @@ def makeWebhookResult(req):
         #"source": "StockPrice"
     #}
     return {
-        "message": speech
-    }
+        "fulfillmentMessages": [
+            {
+                "text": {
+                    "text": [
+                        speech
+                        ]
+                    }
+                }
+            ]
+        }
 
 @app.route('/dialogflow', methods=['POST'])
 def dialogflow():
