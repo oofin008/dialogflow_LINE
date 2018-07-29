@@ -26,9 +26,9 @@ def webhook():
     return r
 
 def makeWebhookResult(req):
-    if req.get("queryResult").get("action") != "get-stock-name" :
+    if req.get("result").get("action") != "get-stock-name" :
         return {}
-    result = req.get("queryResult")
+    result = req.get("result")
     parameters = result.get("parameters")
     name = parameters.get("stock-name")
     #will put stock api result here
