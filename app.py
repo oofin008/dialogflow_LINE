@@ -18,19 +18,19 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
     print(json.dumps(req, indent=4))
-    #res = makeWebhookResult(req)
-    #res = json.dumps(res, indent=4)
+    res = makeWebhookResult(req)
+    res = json.dumps(res, indent=4)
     res = req.get("queryResult").get("action")
     print(res)
-    #r = make_response(res)
-    #r.headers['Content-Type'] = 'application/json'
-    #return r
-    return
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+    #return
 
 def makeWebhookResult(req):
-    if req.get("result").get("action") != "get-stock-name" :
+    if req.get("queryResult").get("action") != "get-stock-name" :
         return {}
-    result = req.get("result")
+    result = req.get("queryResult")
     parameters = result.get("parameters")
     name = parameters.get("stock-name")
     #will put stock api result here
