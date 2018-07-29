@@ -42,13 +42,10 @@ def makeWebhookResult(req):
         #"source": "StockPrice"
     #}
     return {
-        "fulfillmentMessages": [
+        "fullfillmentText": speech,
+        "fullfillmentMessages": [
             {
-                "text": {
-                    "text": [
-                        speech
-                        ]
-                    }
+                speech
                 }
             ]
         }
