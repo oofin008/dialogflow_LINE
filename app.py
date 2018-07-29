@@ -17,7 +17,7 @@ def index():
 def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
-    print(json.dumps(req))
+    print(json.dumps(req, indent=4))
     return
 
 @app.route('/dialogflow', methods=['POST'])
