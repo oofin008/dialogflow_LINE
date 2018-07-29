@@ -24,7 +24,7 @@ def webhook():
     print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
-    return r
+    return 'OK', 200
     #return
 
 def makeWebhookResult(req):
@@ -39,7 +39,7 @@ def makeWebhookResult(req):
     print("Response: ")
     print(speech)
     return {
-        "speech": speech,
+        "text": speech,
         "displayText": speech,
         "source": "StockPrice"
     }
