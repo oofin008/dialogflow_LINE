@@ -43,12 +43,7 @@ def makeWebhookResult(req):
     #}
     return {
         "fullfillmentText": speech,
-        "fullfillmentMessages": [
-            {
-                speech
-                }
-            ]
-        }
+    }
 
 @app.route('/dialogflow', methods=['POST'])
 def dialogflow():
