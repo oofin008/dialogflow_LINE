@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response
 import json
 import requests
 import regex
@@ -18,7 +18,29 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
     print(json.dumps(req, indent=4))
-    return
+    res = makeWebhookResult(req)
+    res = json.dumps(res, indent=4)
+    print(res)
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
+def makeWebhookResult(req):
+    if req.get("result").get("action") != "get-stock-name" :
+        return {}
+    result = req.get("result")
+    parameters = result.get("parameters")
+    name = parameters.get("stock-name")
+    #will put stock api result here
+    stock = {'PTT':'I am PTT','SET':'SET is here' }
+    speech =  "The Stock price of" + name + " is " + str(stock[name])
+    print("Response: ")
+    print(speech)
+    return {
+        "speech": speech,
+        "displayText": speech,
+        "source": "StockPrice"
+    }
 
 @app.route('/dialogflow', methods=['POST'])
 def dialogflow():
