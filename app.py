@@ -20,7 +20,7 @@ def webhook():
     print(json.dumps(req, indent=4))
     res = makeWebhookResult(req)
     res = json.dumps(res, indent=4)
-    res = req.get("queryResult").get("action")
+    #res = req.get("queryResult").get("action")
     print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
@@ -35,7 +35,7 @@ def makeWebhookResult(req):
     name = parameters.get("stock-name")
     #will put stock api result here
     stock = {'PTT':'I am PTT','SET':'SET is here' }
-    speech =  "The Stock price of" + name + " is " + str(stock[name])
+    speech =  "The Stock price of " + name + " is " + str(stock[name])
     print("Response: ")
     print(speech)
     return {
