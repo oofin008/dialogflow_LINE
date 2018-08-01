@@ -3,8 +3,9 @@ from flask import Flask, request, render_template, make_response
 import json
 import requests
 import regex
-
+from oil_price_api import ptt_result_API
 #file html must save in 'templates' folder
+oil_price = ptt_result_API()
 
 app = Flask(__name__)
 
@@ -34,46 +35,13 @@ def makeWebhookResult(req):
     parameters = result.get("parameters")
     name = parameters.get("stock-name")
     #will put stock api result here
-    stock = {'PTT':'I am PTT','SET':'SET is here' }
+    stock = {'PTT':oil_price,'SET':'SET is here' }
     speech =  "The Stock price of " + name + " is " + str(stock[name])
     print("Response: ")
     print(speech)
-    quickreply_list = [{
-      "type": "text",
-      "text": "Select your favorite food category or send me your location!",
-      "quickReply": { 
-        "items": [
-          {
-            "type": "action",
-            "imageUrl": "https://example.com/sushi.png",
-            "action": {
-              "type": "message",
-              "label": "Sushi",
-              "text": "Sushi"
-            }
-          },
-          {
-            "type": "action",
-            "imageUrl": "https://example.com/tempura.png",
-            "action": {
-              "type": "message",
-              "label": "Tempura",
-              "text": "Tempura"
-            }
-          },
-          {
-            "type": "action",
-            "action": {
-              "type": "location",
-              "label": "Send location"
-            }
-          }
-        ]
-      }
-    }]
     return {
-        "speech": quickreply_list,
-        "displayText": quickreply_list,
+        "speech": speech,
+        "displayText": speech,
         "source": "StockPrice"
     }
 
