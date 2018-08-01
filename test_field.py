@@ -1,31 +1,5 @@
-#test DICT python
-import random
-import dialogflow as df
-
-val = 'oil price'
-
-@app.route('/dialogflow', methods=['POST'])
-def dialogflow():
-    msg_in_json = requests.get_json()
-    msg_in_str = json.dumps(msg_in_json)
-    reply()
-    #replyToken = msg_in_json["events"][0]['replyToken']
-    #what did i do ?
-    return 'OK', 200
-
-def reply(text):
-    Dialogflow_API = 'https://api.dialogflow.com/v1/query?v=20150910'
-    headers = {
-        'Authorization': DIALOGFLOW_API_KEY,
-        'Content-Type': 'application/json'
-        }
-    body = json.dumps({
-        "contexts": some_list_of_context,
-        "lang": "en",
-        "query": msgs,
-        "sessionId": "12345"
-        "timezone": "America/New_York"
-        })
-    msgs = 'hello'
-    requests.post(Dialogflow_API,headers=headers, data=body)
-    return
+from pandas_datareader import data as pdr
+import fix_yahoo_finance as yf # <== that's all it takes :-)
+# download dataframe
+ptt = pdr.get_data_yahoo("PTT.BK", start="2017-01-01", end="2017-04-30")
+print(ptt.tail())

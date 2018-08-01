@@ -44,8 +44,9 @@ def makeWebhookResult(req):
 
 @app.route('/dialogflow', methods=['POST'])
 def dialogflow():
-    msg_in_json = requests.get_json()
+    msg_in_json = requests.get_json(silent=True, force=True)
     msg_in_str = json.dumps(msg_in_json)
+    print(json.dumps(msg_in_json, indent=4))
     return 'OK', 200
 
 def reply(text):
