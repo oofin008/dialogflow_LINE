@@ -38,35 +38,44 @@ def makeWebhookResult(req):
     speech =  "The Stock price of " + name + " is " + str(stock[name])
     print("Response: ")
     print(speech)
+    quickreply_list = [{
+      "type": "text",
+      "text": "Select your favorite food category or send me your location!",
+      "quickReply": { 
+        "items": [
+          {
+            "type": "action",
+            "imageUrl": "https://example.com/sushi.png",
+            "action": {
+              "type": "message",
+              "label": "Sushi",
+              "text": "Sushi"
+            }
+          },
+          {
+            "type": "action",
+            "imageUrl": "https://example.com/tempura.png",
+            "action": {
+              "type": "message",
+              "label": "Tempura",
+              "text": "Tempura"
+            }
+          },
+          {
+            "type": "action",
+            "action": {
+              "type": "location",
+              "label": "Send location"
+            }
+          }
+        ]
+      }
+    }]
     return {
-        "speech": speech,
-        "displayText": speech,
+        "speech": quickreply_list,
+        "displayText": quickreply_list,
         "source": "StockPrice"
     }
-
-@app.route('/dialogflow', methods=['POST'])
-def dialogflow():
-    msg_in_json = requests.get_json(silent=True, force=True)
-    msg_in_str = json.dumps(msg_in_json)
-    print(json.dumps(msg_in_json, indent=4))
-    return 'OK', 200
-
-def reply(text):
-    Dialogflow_API = 'https://api.dialogflow.com/v1/query?v=20150910'
-    headers = {
-        'Authorization': DIALOGFLOW_API_KEY,
-        'Content-Type': 'application/json'
-        }
-    body = json.dumps({
-        "contexts": some_list_of_context,
-        "lang": "th",
-        "query": msgs,
-        "sessionId": "12345",
-        "timezone": "Asia/Bangkok"
-        })
-    msgs = 'hello'
-    requests.post(Dialogflow_API,headers=headers, data=body)
-    return
 
 
 if __name__ == '__main__':
